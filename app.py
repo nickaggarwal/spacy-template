@@ -1,26 +1,19 @@
-from vllm import LLM, SamplingParams
-from pathlib import Path
-from transformers import AutoTokenizer
+import spacy
+import json
 
 class InferlessPythonModel:
+
     def initialize(self):
-        model_id = "rbgo/inferless-llama-3-8B"  # Specify the model repository ID
-        # Define sampling parameters for model generation
-        self.sampling_params = SamplingParams(temperature=0.7, top_p=0.95, max_tokens=128)
-        # Initialize the LLM object
-        self.llm = LLM(model=model_id)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        model_id = "en_core_web_sm"  # Specify the model repository ID
+        spacy.cli.download("en_core_web_sm")
+        self.nlp = spacy.load("en_core_web_sm")
         
     def infer(self,inputs):
         prompts = inputs["prompt"]  # Extract the prompt from the input
-        chat_format = [{"role": "user", "content": prompts}]
-        text = self.tokenizer.apply_chat_template(chat_format,tokenize=False,add_generation_prompt=True)
-        result = self.llm.generate(text, self.sampling_params)
-        # Extract the generated text from the result
-        result_output = [output.outputs[0].text for output in result]
-
-        # Return a dictionary containing the result
-        return {'generated_text': result_output[0]}
+        doc = self.nlp(prompts)
+        for token in doc:
+            print(token.text, token.pos_, token.dep_)
+        return {'generated_result': json.dumps(doc) } 
 
     def finalize(self):
         pass
