@@ -13,7 +13,7 @@ class InferlessPythonModel:
         doc = self.nlp(prompts)
         result = ""
         for token in doc:
-            result += "\n " + token.text + " - "  +  oken.dep_ 
+            result += " \n " + token.text + " - "  +  oken.dep_ 
         return {'generated_result': result } 
 
     def finalize(self):
