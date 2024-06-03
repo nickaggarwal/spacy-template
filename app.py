@@ -11,9 +11,10 @@ class InferlessPythonModel:
     def infer(self,inputs):
         prompts = inputs["prompt"]  # Extract the prompt from the input
         doc = self.nlp(prompts)
+        result = ""
         for token in doc:
-            print(token.text, token.pos_, token.dep_)
-        return {'generated_result': json.dumps(doc) } 
+            result += "\n " + token.text + " - "  +  oken.dep_ 
+        return {'generated_result': result } 
 
     def finalize(self):
         pass
